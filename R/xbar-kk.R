@@ -1,15 +1,21 @@
-# Create x-bar chart for known mean and standard deviation of process data
-# User defines process data set in string or data frame (x)
-# User defines process mean (mu) and process standard deviation (s)
-# User defines sigma limits (k)
+#' X-bar chart for known mean and standard deviation of process data
+#' @param x is a vector of values representing process data
+#' @param mu is the process mean
+#' @param sigma is the process standard deviation
+#' @param k is the sigma limits for the control chart
+#' @return A X-bar control chart
+#' @example
+#' xbarkk(warpbreaks$breaks, 28, 13, 3)
+#' @export
+#' @import stats methods datasets ggplot2
 
-xbarkk <- function(x, mu, s, k) {
+xbarkk <- function(x, mu, sigma, k) {
   library(ggplot2)
   data <- data.frame(x)          # create data frame from user process data input
   cl <- mu                       # define centerline of x-bar chart based on known process mean
   A <- k/(sqrt(length(x)))       # calculate constant for A control chart parameter
-  ucl <- cl + A*s                # calculate upper control chart limit for x-bar chart
-  lcl <- cl - A*s                # calculate lower control chart limit for x-bar chart
+  ucl <- cl + A*sigma            # calculate upper control chart limit for x-bar chart
+  lcl <- cl - A*sigma            # calculate lower control chart limit for x-bar chart
 
   xplot <- ggplot(data, aes(x=seq(1:length(x)), y=data[,1])) +
     geom_point() +
