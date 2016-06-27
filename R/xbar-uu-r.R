@@ -1,4 +1,4 @@
-#' X-bar chart for unknown mean and unknown standard deviation (Range Based) of process data
+#' X-bar chart for unknown mean and unknown standard deviation (range based) of process data
 #' @param x is a data frame of values representing process data for subgroup mean (1) and range (2)
 #' @param k is the sigma limits for the control chart
 #' @param n is the number of observations in each subgroup

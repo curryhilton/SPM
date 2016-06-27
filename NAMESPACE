@@ -2,6 +2,7 @@
 
 export(xbarkk)
 export(xbaruur)
+export(xbaruus)
 import(datasets)
 import(ggplot2)
 import(methods)

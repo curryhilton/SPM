@@ -2,7 +2,7 @@
 % Please edit documentation in R/xbar-uu-r.R
 \name{xbaruur}
 \alias{xbaruur}
-\title{X-bar chart for unknown mean and unknown standard deviation (Range Based) of process data}
+\title{X-bar chart for unknown mean and unknown standard deviation (range based) of process data}
 \usage{
 xbaruur(x, k, n)
 }
@@ -17,7 +17,7 @@ xbaruur(x, k, n)
 A X-bar control chart
 }
 \description{
-X-bar chart for unknown mean and unknown standard deviation (Range Based) of process data
+X-bar chart for unknown mean and unknown standard deviation (range based) of process data
 }
 \examples{
 xbaruur(warpbreaks$breaks, 3, 5)
