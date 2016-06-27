@@ -3,8 +3,7 @@ library(shiny)
 library(ggplot2)
 library(grid)                                           # load grid
 library(gridExtra)                                      # load gridExtra
-library(ggthemes)
-library(ggExtra)
+
 
 shinyServer(
   function(input, output){

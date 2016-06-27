@@ -4,7 +4,7 @@
 #' @param sigma is the process standard deviation
 #' @param k is the sigma limits for the control chart
 #' @return A X-bar control chart
-#' @example
+#' @examples
 #' xbarkk(warpbreaks$breaks, 28, 13, 3)
 #' @export
 #' @import stats methods datasets ggplot2
