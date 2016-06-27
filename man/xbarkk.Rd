@@ -4,16 +4,18 @@
 \alias{xbarkk}
 \title{X-bar chart for known mean and standard deviation of process data}
 \usage{
-xbarkk(x, mu, sigma, k)
+xbarkk(x, mu, sigma, k, n)
 }
 \arguments{
-\item{x}{is a vector of values representing process data}
+\item{x}{is a vector of values representing process data for subgroup means}
 
-\item{mu}{is the process mean}
+\item{mu}{is the known process mean}
 
-\item{sigma}{is the process standard deviation}
+\item{sigma}{is the known process standard deviation}
 
 \item{k}{is the sigma limits for the control chart}
+
+\item{n}{is the number of observations in each subgroup}
 }
 \value{
 A X-bar control chart
@@ -22,6 +24,6 @@ A X-bar control chart
 X-bar chart for known mean and standard deviation of process data
 }
 \examples{
-xbarkk(warpbreaks$breaks, 28, 13, 3)
+xbarkk(warpbreaks$breaks, 28, 13, 3, 5)
 }
 
