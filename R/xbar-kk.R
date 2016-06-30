@@ -17,7 +17,7 @@ xbarkk <- function(x, mu, sigma, k, n) {
   ucl <- cl + A*sigma                       # calculate upper control chart limit for x-bar chart
   lcl <- cl - A*sigma                       # calculate lower control chart limit for x-bar chart
 
-  xplot <- ggplot(data, aes(x=seq(1:length(data[,1])), y=data[,1])) +
+  plot <- ggplot(data, aes(x=seq(1:length(data[,1])), y=data[,1])) +
     geom_point(size=2, aes(color=data[,1]>ucl | data[,1]<lcl)) +
     scale_colour_manual(values=c("black", "red")) +
     guides(colour=FALSE) +
@@ -27,5 +27,5 @@ xbarkk <- function(x, mu, sigma, k, n) {
     labs(x="Subgroup",y="X-Bar") +
     ggtitle("X-Bar Chart: Standards Known") +
     theme(plot.title = element_text(size = 16))
-  xplot
+  plot
 }

@@ -1,12 +1,15 @@
-# Create R-bar chart for known standard deviation of process data
-# User defines process range data set in string or data frame (x)
-# User defines process standard deviation (s)
-# User defines sigma limits (k)
+#' R-bar chart for known standard deviation of process data
+#' @param x is vector of values representing process data for subgroup ranges
+#' @param k is the sigma limits for the control chart
+#' @param n is the number of observations in each subgroup
+#' @return A R-bar control chart
+#' @examples
+#' rbark(warpbreaks$breaks, 13, 3, 5)
+#' @export
+#' @import stats methods datasets ggplot2
 
-rbark <- function(x, s, k) {
-  library(ggplot2)
+rbark <- function(x, s, k, n) {
   data <- data.frame(x)          # create data frame from user process data input
-  n <- length(data[,1])          # calculate the number of subgroups
   d2 <- c(1.128, 1.693, 2.059, 2.326, 2.534,  # define d2 control chart parameters
           2.704, 2.847, 2.970, 3.078, 3.173,  # Montgomery's textbook
           3.258, 3.336, 3.407, 3.472, 3.532,
@@ -23,12 +26,15 @@ rbark <- function(x, s, k) {
   ucl <- D2*s                    # calculate upper control chart limit for R-bar chart
   lcl <- D1*s                    # calculate lower control chart limit for R-bar chart
 
-  rplot <- ggplot(data, aes(x=seq(1:length(x)), y=data[,1])) +
-    geom_point() +
+  plot <- ggplot(data, aes(x=seq(1:length(data[,1])), y=data[,1])) +
+    geom_point(size=2, aes(color=data[,1]>ucl | data[,1]<lcl)) +
+    scale_colour_manual(values=c("black", "red")) +
+    guides(colour=FALSE) +
     geom_hline(yintercept=cl) +
     geom_hline(yintercept=ucl, linetype="dashed", color = "red") +
     geom_hline(yintercept=lcl, linetype="dashed", color = "red") +
-    labs(x="Sample",y="R's") +
-    ggtitle("R-Bar Chart: Standards Known")
-  rplot
+    labs(x="Subgroup",y="X-Bar") +
+    ggtitle("R-Bar Chart: Standards Known") +
+    theme(plot.title = element_text(size = 16))
+  plot
 }
