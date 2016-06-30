@@ -1,5 +1,6 @@
 #' R-bar chart for known standard deviation of process data
 #' @param x is vector of values representing process data for subgroup ranges
+#' @param sigma is the known process standard deviation
 #' @param k is the sigma limits for the control chart
 #' @param n is the number of observations in each subgroup
 #' @return A R-bar control chart
@@ -8,7 +9,7 @@
 #' @export
 #' @import stats methods datasets ggplot2
 
-rbark <- function(x, s, k, n) {
+rbark <- function(x, sigma, k, n) {
   data <- data.frame(x)          # create data frame from user process data input
   d2 <- c(1.128, 1.693, 2.059, 2.326, 2.534,  # define d2 control chart parameters
           2.704, 2.847, 2.970, 3.078, 3.173,  # Montgomery's textbook
@@ -22,9 +23,9 @@ rbark <- function(x, s, k, n) {
           0.720, 0.716, 0.712, 0.708)
   D1 = d2[n-1] - k*d3[n-1]       # calculate control chart constant D1
   D2 = d2[n-1] + k*d3[n-1]       # calculate control chart constant D2
-  cl <- d2[n-1]*s                # calculate centerline of R-bar chart
-  ucl <- D2*s                    # calculate upper control chart limit for R-bar chart
-  lcl <- D1*s                    # calculate lower control chart limit for R-bar chart
+  cl <- d2[n-1]*sigma            # calculate centerline of R-bar chart
+  ucl <- D2*sigma                # calculate upper control chart limit for R-bar chart
+  lcl <- D1*sigma                # calculate lower control chart limit for R-bar chart
 
   plot <- ggplot(data, aes(x=seq(1:length(data[,1])), y=data[,1])) +
     geom_point(size=2, aes(color=data[,1]>ucl | data[,1]<lcl)) +
