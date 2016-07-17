@@ -1,26 +1,65 @@
 
 library(shiny)
+library(shinythemes)
 
-shinyUI(fluidPage(
+shinyUI(navbarPage("Statistical Process Measurement",
+  theme = shinytheme("flatly"),
+  tabPanel("Selection",
 
-  titlePanel(title = "Statistical Process Measurement"),
-  sidebarLayout(
-    sidebarPanel(
-                 h4("Parameters"),
-                 textInput("mu", "MU", "10"),
-                 textInput("sd", "Standard Deviation", "1"),
-                 sliderInput("l", "L", min = 0, max=8, value = 3),
-                 sliderInput("m", "Rational Subgroups (m)", min = 0, max=100, value = 25),
-                 sliderInput("n", "Sample Size (n)", min = 0, max=25, value = 5)
-    ),
-    mainPanel(
-              tabsetPanel(type="tabs",
-                tabPanel("X-Bar, s", plotOutput("xbar_s", width = "100%", height = "500px")),
-                tabPanel("X-Bar, R", plotOutput("xbar_r", width = "100%", height = "500px"))
-              ),
-              plotOutput("oc", width = "100%", height = "275px"))
+    fluidRow(
+      column(4, wellPanel(
+        selectInput("chart", "Control Chart",
+                    c("Shewhart X-Bar", "R Chart", "s Chart"))
+                         )
+            ),
 
-  )
+      column(4, wellPanel(
+        uiOutput("ui")
+      ))
+          ),
+
+
+    sidebarLayout(
+      sidebarPanel(
+        fileInput('file1', 'Choose file to Upload',
+                  accept = c(
+                           'text/csv',
+                           'text/comma-separated-values',
+                           'text/tab-separated-values',
+                           'text/plain',
+                           '.csv',
+                           '.tsv'
+                         )
+               ),
+        tags$hr(),
+        checkboxInput('header', 'Header', TRUE),
+        radioButtons('sep', 'Separator',
+                            c(Comma=',',
+                              Semicolon=';',
+                              Tab='\t'),
+                            ','),
+        radioButtons('quote', 'Quote',
+                            c(None='',
+                              'Double Quote'='"',
+                              'Single Quote'="'"),
+                            '"'),
+        tags$hr(),
+        p('Upload data frame with subgroup means and/or standard deviations/ranges')
+
+          ),
+        mainPanel(
+          fluidRow(
+            splitLayout(cellWidths = c("50%", "50%"), verbatimTextOutput("sum"),
+                             tableOutput("table")
+                             )
+               )
+
+             )
+           )
+
+
+       )
+)
 )
 
-)
+

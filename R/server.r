@@ -3,12 +3,80 @@ library(shiny)
 library(ggplot2)
 library(grid)                                           # load grid
 library(gridExtra)                                      # load gridExtra
-
+options(shiny.maxRequestSize = 9*1024^2)
 
 shinyServer(
   function(input, output){
 
-    output$o_cc <- renderText(input$cc)
+    output$ui <- renderUI({
+      if (is.null(input$chart))
+        return()
+
+      switch(input$chart,
+        "Shewhart X-Bar" = radioButtons("options", "Options",
+                            choices = c("X-bar, Both Standards Given" = "xbarkk",
+                                        "X-bar, No Standards Given (R)" = "xbarur",
+                                        "X-bar, No Standards Given (s)" = "xbarus")
+                                        ),
+        "R Chart" = radioButtons("options", "Options",
+                             choices = c("R, Standards Given" = "rbark",
+                                         "R, No Standards Given" = "rbaru"
+                                         )
+                                        ),
+
+        "s Chart" = radioButtons("options", "Options",
+                                 choices = c("s, Standards Given" = "sk",
+                                             "s, No Standards Given" = "su"
+                                 )
+                                )
+            )
+                           })
+
+    data <- reactive({
+      # input$file1 will be NULL initially. After the user selects
+      # and uploads a file, it will be a data frame with 'name',
+      # 'size', 'type', and 'datapath' columns. The 'datapath'
+      # column will contain the local filenames where the data can
+      # be found.
+
+      inFile <- input$file1
+
+      if (is.null(inFile))
+        return(NULL)
+
+      read.csv(inFile$datapath, header = input$header,
+               sep = input$sep, quote = input$quote)
+
+                    })
+
+    dfx <- reactive({
+      x <- data()[,1]
+    })
+
+    dfr <- reactive({
+      r <- data()[,2]
+    })
+
+    output$file <- renderTable({
+      if(is.null(data())){return()}
+      input$file1
+    })
+
+    output$sum <- renderPrint({
+      if(is.null(data())){return()}
+      summary(data())
+    })
+
+    output$table <- renderTable({
+      if(is.null(data())){return()}
+      data()
+    })
+
+    output$norm <- renderPlot({
+      if(is.null(dfx())){return()}
+      qqnorm(dfx(), main = "Normal Probability Plot - X-bar")
+      qqline(dfx())
+    })
 
     output$xbar_s <- renderPlot({
       mu <- as.numeric(input$mu)
@@ -42,8 +110,7 @@ shinyServer(
         labs(x="Subgroup",y="X-Bar") +
         scale_x_discrete(limits=seq(1:m))+
         ggtitle("X-Bar Chart") +
-        theme(plot.title = element_text(size = 20)) +
-        theme_igray()
+        theme(plot.title = element_text(size = 20))
 
       s <- ggplot(s_data, aes(mn, s)) +
         geom_point(size=2) +
@@ -53,8 +120,7 @@ shinyServer(
         labs(x="Subgroup",y="s") +
         scale_x_discrete(limits=seq(1:m))+
         ggtitle("S Chart") +
-        theme(plot.title = element_text(size = 20)) +
-        theme_igray()
+        theme(plot.title = element_text(size = 20))
 
       grid.arrange(xbar, s, ncol = 1)
     })
@@ -98,8 +164,7 @@ shinyServer(
         labs(x="Subgroup",y="X-Bar") +
         scale_x_discrete(limits=seq(1:m))+
         ggtitle("X-Bar Chart") +
-        theme(plot.title = element_text(size = 20)) +
-        theme_igray()
+        theme(plot.title = element_text(size = 20))
 
       r <- ggplot(r_data, aes(mn, r))+
         geom_point(size=2) +
@@ -109,8 +174,7 @@ shinyServer(
         labs(x="Subgroup",y="R") +
         scale_x_discrete(limits=seq(1:m))+
         ggtitle("R Chart")+
-        theme(plot.title = element_text(size = 20)) +
-        theme_igray()
+        theme(plot.title = element_text(size = 20))
 
       grid.arrange(xbar, r, ncol = 1)
     })
@@ -140,13 +204,12 @@ shinyServer(
       oc <- ggplot(oc_data, aes(k, beta)) +
               stat_smooth() +
               ggtitle("OC Function") +
-              theme(plot.title = element_text(size = 20))+
-              theme_igray()
+              theme(plot.title = element_text(size = 20))
+
       qq <- ggplot(data=xx, aes(sample=x)) +
               stat_qq() +
               ggtitle("QQ - Plot") +
-              theme(plot.title = element_text(size = 20)) +
-              theme_igray()
+              theme(plot.title = element_text(size = 20))
 
       tb <- tableGrob(t)
 
