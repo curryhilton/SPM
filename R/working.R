@@ -503,3 +503,47 @@ output$norm <- renderPlot({
   qqnorm(dfx(), main = "Normal Probability Plot - X-bar")
   qqline(dfx())
 })
+
+
+dfx <- reactive({
+  x <- data()[,1]
+})
+
+dfr <- reactive({
+  r <- data()[,2]
+})
+
+dfs <- reactive({
+  s <- data()[,2]
+})
+
+dfm <- reactive({
+  m <- length(dfx())
+})
+
+
+output$plot <- renderPlot({
+  if(input$chart == "Shewhart X-Bar Chart, Standards Given") {
+    mu <- as.numeric(input$mu)
+    sd <- as.numeric(input$sd)
+    L <- as.numeric(input$l)
+    n <- as.numeric(input$n)
+    A <- L/(sqrt(n))
+    uclx <- mu + A*sd
+    lclx <- max(mu - A*sd,0)
+    m <- seq(1:dfm())
+    x <- dfx()
+    df <- data.frame(x, m)
+    #plot(m, x)
+    xbar <- ggplot(df, aes(m, x))+
+      geom_point(size=2, aes(color=x>uclx | x<lclx)) +
+      scale_colour_manual(values=c("black", "red")) +
+      guides(colour=FALSE) +
+      geom_hline(yintercept=mu) +
+      geom_hline(yintercept=uclx, linetype="dashed", color = "red") +
+      geom_hline(yintercept=lclx, linetype="dashed", color = "red") +
+      labs(x="Subgroup",y="X-Bar") +
+      scale_x_discrete(limits=seq(1:m))+
+      theme(plot.title = element_text(size = 20))
+
+    xbar

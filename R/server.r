@@ -36,6 +36,10 @@ shinyServer(
       s <- data()[,2]
     })
 
+    dfm <- reactive({
+      m <- length(dfx())
+    })
+
     output$file <- renderTable({
       if(is.null(data())){return()}
       input$file1
@@ -57,7 +61,17 @@ shinyServer(
 
     output$plot <- renderPlot({
       if(input$chart == "Shewhart X-Bar Chart, Standards Given") {
-        plot(seq(1:10), dfx())
+        mu <- as.numeric(input$mu)
+        sd <- as.numeric(input$sd)
+        L <- as.numeric(input$l)
+        n <- as.numeric(input$n)
+        A <- L/(sqrt(n))
+        uclx <- mu + A*sd
+        lclx <- max(mu - A*sd,0)
+        m <- seq(1:dfm())
+        x <- dfx()
+        plot(m, x)
+
       } else if (input$chart == "Shewhart X-Bar Chart (R), No Standards Given") {
         #plot()
       } else if (input$chart == "Shewhart X-Bar Chart (s), No Standards Given") {
