@@ -7,17 +7,27 @@ shinyUI(navbarPage("Statistical Process Measurement",
   tabPanel("Selection",
 
     fluidRow(
-      column(4, wellPanel(
+      column(8, wellPanel(
         selectInput("chart", "Control Chart",
-                    c("Shewhart X-Bar", "R Chart", "s Chart"))
+                    c("Shewhart X-Bar Chart, Standards Given",
+                      "Shewhart X-Bar Chart (R), No Standards Given",
+                      "Shewhart X-Bar Chart (s), No Standards Given",
+                      "R Chart, Standards Given",
+                      "R Chart, No Standards Given",
+                      "s Chart, Standards Given",
+                      "s Chart, No Standards Given",
+                      "p Chart, Standards Given",
+                      "p Chart, No Standards Given",
+                      "np Chart, Standards Given",
+                      "np Chart, No Standards Given",
+                      "c Chart, Standards Given",
+                      "c Chart, No Standards Given",
+                      "CUSUM Chart, Target Given",
+                      "EWMA Chart, Target Given"))
                          )
-            ),
+            )
 
-      column(4, wellPanel(
-        uiOutput("ui")
-      ))
           ),
-
 
     sidebarLayout(
       sidebarPanel(
@@ -47,19 +57,36 @@ shinyUI(navbarPage("Statistical Process Measurement",
         p('Upload data frame with subgroup means and/or standard deviations/ranges')
 
           ),
+
         mainPanel(
-          fluidRow(
-            splitLayout(cellWidths = c("50%", "50%"), verbatimTextOutput("sum"),
-                             tableOutput("table")
-                             )
-               )
+            verbatimTextOutput("sum"),
+            tableOutput("table")
+                 )
 
              )
-           )
 
+       ),
 
-       )
-)
+  tabPanel("Control Chart",
+    sidebarLayout(
+      sidebarPanel(
+        h4("Parameters"),
+        textInput("mu", "MU", "10"),
+        textInput("sd", "Standard Deviation", "1"),
+        sliderInput("l", "L", min = 0, max=8, value = 3),
+        sliderInput("n", "Sample Size (n)", min = 0, max=25, value = 5)
+                  ),
+
+    mainPanel(
+      tags$p("Control Chart:"),
+      verbatimTextOutput("chart_type_text"),
+      plotOutput("plot")
+
+             )
+                  )
+          )
+
+  )
 )
 
 
