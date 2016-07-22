@@ -20,6 +20,8 @@ shinyUI(navbarPage("Statistical Process Measurement",
                       "p Chart, No Standards Given",
                       "np Chart, Standards Given",
                       "np Chart, No Standards Given",
+                      "u Chart, Standards Given",
+                      "u Chart, No Standards Given",
                       "c Chart, Standards Given",
                       "c Chart, No Standards Given",
                       "CUSUM Chart, Target Given",
@@ -80,7 +82,7 @@ shinyUI(navbarPage("Statistical Process Measurement",
     mainPanel(
       tags$p("Control Chart:"),
       verbatimTextOutput("chart_type_text"),
-      plotOutput("plot")
+      plotOutput("plot", width = "100%", height = "400px")
 
              )
                   )
