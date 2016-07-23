@@ -77,11 +77,11 @@ shinyServer(
         CL <- paste("Center Line", round(cl, 2))
         UCL <- paste("UCL =", round(uclx, 2))
         sub <- paste("Subgroups =", length(m))
-        stdev <- paste("Standard Deviation =", round(sd))
+        stdev <- paste("Standard Deviation =", round(sd, 2))
         count <- paste("Violations =", length(which(x > uclx | x < lclx)))
 
         par(bg="lightsteelblue2", mar = c(10, 5, 2, 2))
-        plot(m, x, xlab = "Subgroups", ylab = "X-bar", ylim = c(lclx - sd, uclx + sd))
+        plot(m, x, xlab = "Subgroups", ylab = "X-bar", ylim = c(min(x) - sd, min(x) + sd))
         rect(par("usr")[1], par("usr")[3], par("usr")[2], par("usr")[4], col = "white")
         abline(h = cl, lwd = 2)
         abline(h = uclx, col = "red", lty = 2)
@@ -119,11 +119,11 @@ shinyServer(
         CL <- paste("Center Line", round(cl, 2))
         UCL <- paste("UCL =", round(uclx, 2))
         sub <- paste("Subgroups =", length(m))
-        stdev <- paste("Standard Deviation =", round(sd))
+        stdev <- paste("Standard Deviation =", round(sd, 2))
         count <- paste("Violations =", length(which(x > uclx | x < lclx)))
 
         par(bg="lightsteelblue2", mar = c(10, 5, 2, 2))
-        plot(m, x, xlab = "Subgroups", ylab = "X-bar", pch = 7, type = "b", ylim = c(lclx - rbar/2, uclx + rbar/2))
+        plot(m, x, xlab = "Subgroups", ylab = "X-bar", pch = 7, type = "b", ylim = c(min(x) - rbar, min(x) + rbar))
         rect(par("usr")[1], par("usr")[3], par("usr")[2], par("usr")[4], col = "white")
         abline(h = cl, lwd = 2)
         abline(h = uclx, col = "red", lty = 2)
@@ -155,11 +155,11 @@ shinyServer(
         CL <- paste("Center Line", round(cl, 2))
         UCL <- paste("UCL =", round(uclx, 2))
         sub <- paste("Subgroups =", length(m))
-        stdev <- paste("Standard Deviation =", round(sd))
+        stdev <- paste("Standard Deviation =", round(sd, 2))
         count <- paste("Violations =", length(which(x > uclx | x < lclx)))
 
         par(bg="lightsteelblue2", mar = c(10, 5, 2, 2))
-        plot(m, x, xlab = "Subgroups", ylab = "X-bar", pch = 7, type = "b", ylim = c(lclx - sbar/2, uclx + sbar/2))
+        plot(m, x, xlab = "Subgroups", ylab = "X-bar", pch = 7, type = "b", ylim = c(min(x) - sbar, min(x) + sbar))
         rect(par("usr")[1], par("usr")[3], par("usr")[2], par("usr")[4], col = "white")
         abline(h = cl, lwd = 2)
         abline(h = uclx, col = "red", lty = 2)
@@ -200,11 +200,11 @@ shinyServer(
         CL <- paste("Center Line", round(cl, 2))
         UCL <- paste("UCL =", round(uclr, 2))
         sub <- paste("Subgroups =", length(m))
-        stdev <- paste("Standard Deviation =", round(sd))
+        stdev <- paste("Standard Deviation =", round(sd, 2))
         count <- paste("Violations =", length(which(r > uclr | r < lclr)))
 
         par(bg="lightsteelblue2", mar = c(10, 5, 2, 2))
-        plot(m, r, xlab = "Subgroups", ylab = "X-bar", pch = 7, type = "b", ylim = c(lclr - sd/2, uclr + sd/2))
+        plot(m, r, xlab = "Subgroups", ylab = "X-bar", pch = 7, type = "b", ylim = c(min(r) - sd, min(r) + sd))
         rect(par("usr")[1], par("usr")[3], par("usr")[2], par("usr")[4], col = "white")
         abline(h = cl, lwd = 2)
         abline(h = uclr, col = "red", lty = 2)
@@ -245,11 +245,11 @@ shinyServer(
         CL <- paste("Center Line", round(cl, 2))
         UCL <- paste("UCL =", round(uclr, 2))
         sub <- paste("Subgroups =", length(m))
-        stdev <- paste("Standard Deviation =", round(sd))
+        stdev <- paste("Standard Deviation =", round(sd, 2))
         count <- paste("Violations =", length(which(r > uclr | r < lclr)))
 
         par(bg="lightsteelblue2", mar = c(10, 5, 2, 2))
-        plot(m, r, xlab = "Subgroups", ylab = "X-bar", pch = 7, type = "b", ylim = c(lclr - sd/2, uclr + sd/2))
+        plot(m, r, xlab = "Subgroups", ylab = "X-bar", pch = 7, type = "b", ylim = c(min(r) - sd, max(r) + sd))
         rect(par("usr")[1], par("usr")[3], par("usr")[2], par("usr")[4], col = "white")
         abline(h = cl, lwd = 2)
         abline(h = uclr, col = "red", lty = 2)
@@ -264,13 +264,142 @@ shinyServer(
         mtext(count, at = m[length(m)] - 1, side = 1, line = 7, adj = 1, font = 2)
 
       } else if (input$chart == "s Chart, Standards Given") {
-        #plot()
+        sd <- as.numeric(input$sd)
+        L <- as.numeric(input$l)
+        n <- as.numeric(input$n)
+        s <- dfx()
+        m <- seq(1:dfm())
+        c4 <- (4*(n-1))/(4*n-3)                    # calculate control chart constant c4
+        cl <- c4*sd                                # calculate centerline of the s chart
+        ucls <- c4*sd + L*sd*sqrt(1-c4^2)          # calculate upper control chart limit for the s chart
+        lcls <- max(c4*sd - L*sd*sqrt(1-c4^2), 0)  # calculate lower control chart limit for the s chart
+
+        size <- paste("Subgroup Size =", n)
+        LCL <- paste("LCL =", round(lcls, 2))
+        CL <- paste("Center Line", round(cl, 2))
+        UCL <- paste("UCL =", round(ucls, 2))
+        sub <- paste("Subgroups =", length(m))
+        stdev <- paste("Standard Deviation =", round(sd, 2))
+        count <- paste("Violations =", length(which(s > ucls | s < lcls)))
+
+        par(bg="lightsteelblue2", mar = c(10, 5, 2, 2))
+        plot(m, s, xlab = "Subgroups", ylab = "s", pch = 7, type = "b", ylim = c(min(s) - sd, max(s) + sd))
+        rect(par("usr")[1], par("usr")[3], par("usr")[2], par("usr")[4], col = "white")
+        abline(h = cl, lwd = 2)
+        abline(h = ucls, col = "red", lty = 2)
+        abline(h = lcls, col = "red", lty = 2)
+        points(s, pch = 20, type = "b", col = ifelse(s > ucls | s < lcls, "red", "black"))
+        mtext(size, at = m[1] + 1, side = 1, line = 5, adj = 0, font = 2)
+        mtext(LCL, at = m[1] + 1, side = 1, line = 6, adj = 0, font = 2)
+        mtext(CL, at = m[1] + 1, side = 1, line = 7, adj = 0, font = 2)
+        mtext(UCL, at = m[1] + 1, side = 1, line = 8, adj = 0, font = 2)
+        mtext(stdev, at = m[length(m)] - 1, side = 1, line = 5, adj = 1, font = 2)
+        mtext(sub, at = m[length(m)] - 1, side = 1, line = 6, adj = 1, font = 2)
+        mtext(count, at = m[length(m)] - 1, side = 1, line = 7, adj = 1, font = 2)
+
       } else if (input$chart == "s Chart, No Standards Given") {
-        #plot()
+        L <- as.numeric(input$l)
+        n <- as.numeric(input$n)
+        s <- dfx()
+        m <- seq(1:dfm())
+        c4 <- (4*(n-1))/(4*n-3)          # calculate control chart constant c4
+        B3 = 1-(L/c4)*(sqrt(1-c4^2))     # calculate control chart constant B3
+        B4 = 1+(L/c4)*(sqrt(1-c4^2))     # calculate control chart constant B4
+        cl <- mean(s)                    # calculate centerline of s chart
+        ucls <- B4*cl                    # calculate upper control chart limit for s chart
+        lcls <- max(B3*cl, 0)            # calculate lower control chart limit for s chart
+        sd <- cl/c4                      # calculate standard deviation for porcess data
+
+        size <- paste("Subgroup Size =", n)
+        LCL <- paste("LCL =", round(lcls, 2))
+        CL <- paste("Center Line", round(cl, 2))
+        UCL <- paste("UCL =", round(ucls, 2))
+        sub <- paste("Subgroups =", length(m))
+        stdev <- paste("Standard Deviation =", round(sd, 2))
+        count <- paste("Violations =", length(which(s > ucls | s < lcls)))
+
+        par(bg="lightsteelblue2", mar = c(10, 5, 2, 2))
+        plot(m, s, xlab = "Subgroups", ylab = "s", pch = 7, type = "b", ylim = c(min(s) - sd, max(s) + sd))
+        rect(par("usr")[1], par("usr")[3], par("usr")[2], par("usr")[4], col = "white")
+        abline(h = cl, lwd = 2)
+        abline(h = ucls, col = "red", lty = 2)
+        abline(h = lcls, col = "red", lty = 2)
+        points(s, pch = 20, type = "b", col = ifelse(s > ucls | s < lcls, "red", "black"))
+        mtext(size, at = m[1] + 1, side = 1, line = 5, adj = 0, font = 2)
+        mtext(LCL, at = m[1] + 1, side = 1, line = 6, adj = 0, font = 2)
+        mtext(CL, at = m[1] + 1, side = 1, line = 7, adj = 0, font = 2)
+        mtext(UCL, at = m[1] + 1, side = 1, line = 8, adj = 0, font = 2)
+        mtext(stdev, at = m[length(m)] - 1, side = 1, line = 5, adj = 1, font = 2)
+        mtext(sub, at = m[length(m)] - 1, side = 1, line = 6, adj = 1, font = 2)
+        mtext(count, at = m[length(m)] - 1, side = 1, line = 7, adj = 1, font = 2)
+
       } else if (input$chart == "p Chart, Standards Given") {
-        #plot()
+        mu <- as.numeric(input$mu)
+        L <- as.numeric(input$l)
+        n <- as.numeric(input$n)
+        p <- dfx()
+        m <- seq(1:dfm())
+        cl <- mu                            # define p based on user input
+        uclp <- cl + L*sqrt((cl*(1-cl))/n)  # calculate upper control chart limit for p chart
+        lclp <- max(cl - L*sqrt((cl*(1-cl))/n), 0)  # calculate lower control chart limit for p chart
+        sd <- sd(p)
+
+        size <- paste("Subgroup Size =", n)
+        LCL <- paste("LCL =", round(lclp, 2))
+        CL <- paste("Center Line", round(cl, 2))
+        UCL <- paste("UCL =", round(uclp, 2))
+        sub <- paste("Subgroups =", length(m))
+        stdev <- paste("Standard Deviation =", round(sd, 2))
+        count <- paste("Violations =", length(which(p > uclp | p < lclp)))
+
+        par(bg="lightsteelblue2", mar = c(10, 5, 2, 2))
+        plot(m, p, xlab = "Subgroups", ylab = "p", pch = 7, type = "b", ylim = c(min(p) - 3*sd, max(p) + 3*sd))
+        rect(par("usr")[1], par("usr")[3], par("usr")[2], par("usr")[4], col = "white")
+        abline(h = cl, lwd = 2)
+        abline(h = uclp, col = "red", lty = 2)
+        abline(h = lclp, col = "red", lty = 2)
+        points(p, pch = 20, type = "b", col = ifelse(p > uclp | p < lclp, "red", "black"))
+        mtext(size, at = m[1] + 1, side = 1, line = 5, adj = 0, font = 2)
+        mtext(LCL, at = m[1] + 1, side = 1, line = 6, adj = 0, font = 2)
+        mtext(CL, at = m[1] + 1, side = 1, line = 7, adj = 0, font = 2)
+        mtext(UCL, at = m[1] + 1, side = 1, line = 8, adj = 0, font = 2)
+        mtext(stdev, at = m[length(m)] - 1, side = 1, line = 5, adj = 1, font = 2)
+        mtext(sub, at = m[length(m)] - 1, side = 1, line = 6, adj = 1, font = 2)
+        mtext(count, at = m[length(m)] - 1, side = 1, line = 7, adj = 1, font = 2)
+
       } else if (input$chart == "p Chart, No Standards Given") {
-        #plot()
+        L <- as.numeric(input$l)
+        n <- as.numeric(input$n)
+        p <- dfx()
+        m <- seq(1:dfm())
+        cl <- mean(p)                                  # define p based on user input
+        uclp <- cl + L*sqrt((cl*(1-cl))/n)             # calculate upper control chart limit for p chart
+        lclp <- max(cl - L*sqrt((cl*(1-cl))/n), 0)     # calculate lower control chart limit for p chart
+        sd <- sd(p)
+
+        size <- paste("Subgroup Size =", n)
+        LCL <- paste("LCL =", round(lclp, 2))
+        CL <- paste("Center Line", round(cl, 2))
+        UCL <- paste("UCL =", round(uclp, 2))
+        sub <- paste("Subgroups =", length(m))
+        stdev <- paste("Standard Deviation =", round(sd, 2))
+        count <- paste("Violations =", length(which(p > uclp | p < lclp)))
+
+        par(bg="lightsteelblue2", mar = c(10, 5, 2, 2))
+        plot(m, p, xlab = "Subgroups", ylab = "p", pch = 7, type = "b", ylim = c(min(p) - 3*sd, max(p) + 3*sd))
+        rect(par("usr")[1], par("usr")[3], par("usr")[2], par("usr")[4], col = "white")
+        abline(h = cl, lwd = 2)
+        abline(h = uclp, col = "red", lty = 2)
+        abline(h = lclp, col = "red", lty = 2)
+        points(p, pch = 20, type = "b", col = ifelse(p > uclp | p < lclp, "red", "black"))
+        mtext(size, at = m[1] + 1, side = 1, line = 5, adj = 0, font = 2)
+        mtext(LCL, at = m[1] + 1, side = 1, line = 6, adj = 0, font = 2)
+        mtext(CL, at = m[1] + 1, side = 1, line = 7, adj = 0, font = 2)
+        mtext(UCL, at = m[1] + 1, side = 1, line = 8, adj = 0, font = 2)
+        mtext(stdev, at = m[length(m)] - 1, side = 1, line = 5, adj = 1, font = 2)
+        mtext(sub, at = m[length(m)] - 1, side = 1, line = 6, adj = 1, font = 2)
+        mtext(count, at = m[length(m)] - 1, side = 1, line = 7, adj = 1, font = 2)
+
       } else if (input$chart == "np Chart, Standards Given") {
         #plot()
       } else if (input$chart == "np Chart, No Standards Given") {
