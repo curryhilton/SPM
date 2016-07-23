@@ -79,7 +79,6 @@ shinyServer(
         sub <- paste("Subgroups =", length(m))
         stdev <- paste("Standard Deviation =", round(sd))
         count <- paste("Violations =", length(which(x > uclx | x < lclx)))
-        arl <- paste("ARL =", round(1/((pnorm(uclx, mu, sd/sqrt(n), lower.tail = F)) + pnorm(lclx, mu, sd/sqrt(n))), 2))
 
         par(bg="lightsteelblue2", mar = c(10, 5, 2, 2))
         plot(m, x, xlab = "Subgroups", ylab = "X-bar", ylim = c(lclx - sd, uclx + sd))
@@ -95,8 +94,6 @@ shinyServer(
         mtext(stdev, at = m[length(m)] - 1, side = 1, line = 5, adj = 1, font = 2)
         mtext(sub, at = m[length(m)] - 1, side = 1, line = 6, adj = 1, font = 2)
         mtext(count, at = m[length(m)] - 1, side = 1, line = 7, adj = 1, font = 2)
-        mtext(arl, at = m[length(m)] - 1, side = 1, line = 8, adj = 1, font = 2)
-
 
       } else if (input$chart == "Shewhart X-Bar Chart (R), No Standards Given") {
         L <- as.numeric(input$l)
@@ -124,7 +121,6 @@ shinyServer(
         sub <- paste("Subgroups =", length(m))
         stdev <- paste("Standard Deviation =", round(sd))
         count <- paste("Violations =", length(which(x > uclx | x < lclx)))
-        arl <- paste("ARL =", round(1/((pnorm(uclx, cl, sd, lower.tail = F)) + pnorm(lclx, cl, sd)), 2))
 
         par(bg="lightsteelblue2", mar = c(10, 5, 2, 2))
         plot(m, x, xlab = "Subgroups", ylab = "X-bar", pch = 7, type = "b", ylim = c(lclx - rbar/2, uclx + rbar/2))
@@ -140,7 +136,6 @@ shinyServer(
         mtext(stdev, at = m[length(m)] - 1, side = 1, line = 5, adj = 1, font = 2)
         mtext(sub, at = m[length(m)] - 1, side = 1, line = 6, adj = 1, font = 2)
         mtext(count, at = m[length(m)] - 1, side = 1, line = 7, adj = 1, font = 2)
-        mtext(arl, at = m[length(m)] - 1, side = 1, line = 8, adj = 1, font = 2)
 
       } else if (input$chart == "Shewhart X-Bar Chart (s), No Standards Given") {
         L <- as.numeric(input$l)
@@ -162,7 +157,6 @@ shinyServer(
         sub <- paste("Subgroups =", length(m))
         stdev <- paste("Standard Deviation =", round(sd))
         count <- paste("Violations =", length(which(x > uclx | x < lclx)))
-        arl <- paste("ARL =", round(1/((pnorm(uclx, cl, sd, lower.tail = F)) + pnorm(lclx, cl, sd)), 2))
 
         par(bg="lightsteelblue2", mar = c(10, 5, 2, 2))
         plot(m, x, xlab = "Subgroups", ylab = "X-bar", pch = 7, type = "b", ylim = c(lclx - sbar/2, uclx + sbar/2))
@@ -178,7 +172,6 @@ shinyServer(
         mtext(stdev, at = m[length(m)] - 1, side = 1, line = 5, adj = 1, font = 2)
         mtext(sub, at = m[length(m)] - 1, side = 1, line = 6, adj = 1, font = 2)
         mtext(count, at = m[length(m)] - 1, side = 1, line = 7, adj = 1, font = 2)
-        mtext(arl, at = m[length(m)] - 1, side = 1, line = 8, adj = 1, font = 2)
 
       } else if (input$chart == "R Chart, Standards Given") {
         sd <- as.numeric(input$sd)
@@ -209,7 +202,6 @@ shinyServer(
         sub <- paste("Subgroups =", length(m))
         stdev <- paste("Standard Deviation =", round(sd))
         count <- paste("Violations =", length(which(r > uclr | r < lclr)))
-        arl <- paste("ARL =", round(1/((pnorm(uclr, cl, sd, lower.tail = F)) + pnorm(lclr, cl, sd)), 2))
 
         par(bg="lightsteelblue2", mar = c(10, 5, 2, 2))
         plot(m, r, xlab = "Subgroups", ylab = "X-bar", pch = 7, type = "b", ylim = c(lclr - sd/2, uclr + sd/2))
@@ -225,7 +217,6 @@ shinyServer(
         mtext(stdev, at = m[length(m)] - 1, side = 1, line = 5, adj = 1, font = 2)
         mtext(sub, at = m[length(m)] - 1, side = 1, line = 6, adj = 1, font = 2)
         mtext(count, at = m[length(m)] - 1, side = 1, line = 7, adj = 1, font = 2)
-        mtext(arl, at = m[length(m)] - 1, side = 1, line = 8, adj = 1, font = 2)
 
       } else if (input$chart == "R Chart, No Standards Given") {
         L <- as.numeric(input$l)
@@ -256,7 +247,6 @@ shinyServer(
         sub <- paste("Subgroups =", length(m))
         stdev <- paste("Standard Deviation =", round(sd))
         count <- paste("Violations =", length(which(r > uclr | r < lclr)))
-        arl <- paste("ARL =", round(1/((pnorm(uclr, cl, sd, lower.tail = F)) + pnorm(lclr, cl, sd)), 2))
 
         par(bg="lightsteelblue2", mar = c(10, 5, 2, 2))
         plot(m, r, xlab = "Subgroups", ylab = "X-bar", pch = 7, type = "b", ylim = c(lclr - sd/2, uclr + sd/2))
@@ -272,7 +262,6 @@ shinyServer(
         mtext(stdev, at = m[length(m)] - 1, side = 1, line = 5, adj = 1, font = 2)
         mtext(sub, at = m[length(m)] - 1, side = 1, line = 6, adj = 1, font = 2)
         mtext(count, at = m[length(m)] - 1, side = 1, line = 7, adj = 1, font = 2)
-        mtext(arl, at = m[length(m)] - 1, side = 1, line = 8, adj = 1, font = 2)
 
       } else if (input$chart == "s Chart, Standards Given") {
         #plot()
