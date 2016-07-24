@@ -1,6 +1,5 @@
 
 library(shiny)
-library(ggplot2)
 
 options(shiny.maxRequestSize = 9*1024^2)
 
