@@ -12,6 +12,7 @@ shinyUI(navbarPage("Statistical Process Measurement",
                     c("Shewhart X-Bar Chart, Standards Given",
                       "Shewhart X-Bar Chart (R), No Standards Given",
                       "Shewhart X-Bar Chart (s), No Standards Given",
+                      "Shewhart X-Bar Chart (MR), No Standards Given",
                       "R Chart, Standards Given",
                       "R Chart, No Standards Given",
                       "s Chart, Standards Given",
@@ -23,9 +24,8 @@ shinyUI(navbarPage("Statistical Process Measurement",
                       "u Chart, Standards Given",
                       "u Chart, No Standards Given",
                       "c Chart, Standards Given",
-                      "c Chart, No Standards Given",
-                      "CUSUM Chart, Target Given",
-                      "EWMA Chart, Target Given"))
+                      "c Chart, No Standards Given"
+                      ))
                          )
             )
 

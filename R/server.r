@@ -81,7 +81,7 @@ shinyServer(
         count <- paste("Violations =", length(which(x > uclx | x < lclx)))
 
         par(bg="lightsteelblue2", mar = c(10, 5, 2, 2))
-        plot(m, x, xlab = "Subgroups", ylab = "X-bar", ylim = c(min(x) - sd, min(x) + sd))
+        plot(m, x, xlab = "Subgroups", ylab = "X-bar", ylim = c(min(x) - sd, max(x) + sd))
         rect(par("usr")[1], par("usr")[3], par("usr")[2], par("usr")[4], col = "white")
         abline(h = cl, lwd = 2)
         abline(h = uclx, col = "red", lty = 2)
@@ -123,7 +123,7 @@ shinyServer(
         count <- paste("Violations =", length(which(x > uclx | x < lclx)))
 
         par(bg="lightsteelblue2", mar = c(10, 5, 2, 2))
-        plot(m, x, xlab = "Subgroups", ylab = "X-bar", pch = 7, type = "b", ylim = c(min(x) - rbar, min(x) + rbar))
+        plot(m, x, xlab = "Subgroups", ylab = "X-bar", pch = 7, type = "b", ylim = c(min(x) - rbar, max(x) + rbar))
         rect(par("usr")[1], par("usr")[3], par("usr")[2], par("usr")[4], col = "white")
         abline(h = cl, lwd = 2)
         abline(h = uclx, col = "red", lty = 2)
@@ -159,7 +159,7 @@ shinyServer(
         count <- paste("Violations =", length(which(x > uclx | x < lclx)))
 
         par(bg="lightsteelblue2", mar = c(10, 5, 2, 2))
-        plot(m, x, xlab = "Subgroups", ylab = "X-bar", pch = 7, type = "b", ylim = c(min(x) - sbar, min(x) + sbar))
+        plot(m, x, xlab = "Subgroups", ylab = "X-bar", pch = 7, type = "b", ylim = c(min(x) - sbar, max(x) + sbar))
         rect(par("usr")[1], par("usr")[3], par("usr")[2], par("usr")[4], col = "white")
         abline(h = cl, lwd = 2)
         abline(h = uclx, col = "red", lty = 2)
@@ -204,7 +204,7 @@ shinyServer(
         count <- paste("Violations =", length(which(r > uclr | r < lclr)))
 
         par(bg="lightsteelblue2", mar = c(10, 5, 2, 2))
-        plot(m, r, xlab = "Subgroups", ylab = "X-bar", pch = 7, type = "b", ylim = c(min(r) - sd, min(r) + sd))
+        plot(m, r, xlab = "Subgroups", ylab = "X-bar", pch = 7, type = "b", ylim = c(min(r) - sd, max(r) + sd))
         rect(par("usr")[1], par("usr")[3], par("usr")[2], par("usr")[4], col = "white")
         abline(h = cl, lwd = 2)
         abline(h = uclr, col = "red", lty = 2)
@@ -535,12 +535,55 @@ shinyServer(
         mtext(sub, at = m[length(m)] - 1, side = 1, line = 6, adj = 1, font = 2)
         mtext(count, at = m[length(m)] - 1, side = 1, line = 7, adj = 1, font = 2)
 
-      } else if (input$chart == "CUSUM Chart, Target Given") {
-        #plot()
+      } else if (input$chart == "Shewhart X-Bar Chart (MR), No Standards Given") {
+        L <- as.numeric(input$l)
+        n <- as.numeric(input$n)
+        m <- seq(1:dfm())
+        x <- dfx()                                    # define x as x in reactive expression
+        mr <- rep(NA, n)                              # function for MR
+        for(j in 1:n+1){
+          mr[j] = abs(x[j]-x[j-1])
+        }
+        mrbar <- mean(mr, na.rm = T)                  # calculate the mean of MR
+        d2 <- c(1.128, 1.693, 2.059, 2.326, 2.534,    # define d2 control chart parameters
+                2.704, 2.847, 2.970, 3.078, 3.173,    # Montgomery's textbook
+                3.258, 3.336, 3.407, 3.472, 3.532,
+                3.588, 3.640, 3.689, 3.735, 3.778,
+                3.819, 3.858, 3.895, 3.931)
+        cl <- mean(x)                                 # calculate the centerline for the IMR chart
+        uclmr <- cl + L*(mrbar/d2[n-1])               # calculate upper control chart limit for IMR chart
+        lclmr <- cl - L*(mrbar/d2[n-1])               # calculate lower control chart limit for IMR chart
+        sd <- sd(x)
+
+        size <- paste("Subgroup Size =", n)
+        LCL <- paste("LCL =", round(lclmr, 2))
+        CL <- paste("Center Line", round(cl, 2))
+        UCL <- paste("UCL =", round(uclmr, 2))
+        sub <- paste("Subgroups =", length(m))
+        stdev <- paste("Standard Deviation =", round(sd, 2))
+        count <- paste("Violations =", length(which(x > uclmr | x < lclmr)))
+
+        par(bg="lightsteelblue2", mar = c(10, 5, 2, 2))
+        plot(m, x, xlab = "Subgroups", ylab = "X-bar", pch = 7, type = "b", ylim = c(min(x) - mrbar, max(x) + mrbar))
+        rect(par("usr")[1], par("usr")[3], par("usr")[2], par("usr")[4], col = "white")
+        abline(h = cl, lwd = 2)
+        abline(h = uclmr, col = "red", lty = 2)
+        abline(h = lclmr, col = "red", lty = 2)
+        points(x, pch = 20, type = "b", col = ifelse(x > uclmr | x < lclmr, "red", "black"))
+        mtext(size, at = m[1] + 1, side = 1, line = 5, adj = 0, font = 2)
+        mtext(LCL, at = m[1] + 1, side = 1, line = 6, adj = 0, font = 2)
+        mtext(CL, at = m[1] + 1, side = 1, line = 7, adj = 0, font = 2)
+        mtext(UCL, at = m[1] + 1, side = 1, line = 8, adj = 0, font = 2)
+        mtext(stdev, at = m[length(m)] - 1, side = 1, line = 5, adj = 1, font = 2)
+        mtext(sub, at = m[length(m)] - 1, side = 1, line = 6, adj = 1, font = 2)
+        mtext(count, at = m[length(m)] - 1, side = 1, line = 7, adj = 1, font = 2)
+
       } else if (input$chart == "EWMA Chart, Target Given") {
         #plot()
-      }
 
+      } else if (input$chart == "CUSUM Chart, Target Given") {
+        #plot()
+      }
     })
 
   }
