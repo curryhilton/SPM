@@ -58,6 +58,11 @@ shinyServer(
       input$chart
     })
 
+    output$hist <- renderPlot({
+      if(is.null(dfx())){return()}
+      hist(dfx(), main = "Histogram", xlab = "Charting Statistic")
+    })
+
     output$plot <- renderPlot({
       if(input$chart == "Shewhart X-Bar Chart, Standards Given") {
         mu <- as.numeric(input$mu)

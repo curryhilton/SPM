@@ -62,7 +62,12 @@ shinyUI(navbarPage("Statistical Process Measurement",
 
         mainPanel(
             verbatimTextOutput("sum"),
-            tableOutput("table")
+            fluidRow(
+              splitLayout(cellWidths = c("30%", "70%"),
+                          tableOutput("table"),
+                          plotOutput("hist")
+              )
+            )
                  )
 
              )
@@ -73,8 +78,8 @@ shinyUI(navbarPage("Statistical Process Measurement",
     sidebarLayout(
       sidebarPanel(
         h4("Parameters"),
-        textInput("mu", "MU", "10"),
-        textInput("sd", "Standard Deviation", "1"),
+        textInput("mu", "Mean/Proportion", "10"),
+        textInput("sd", "Standard Deviation/Range", "1"),
         sliderInput("l", "L", min = 0, max=8, value = 3),
         sliderInput("n", "Sample Size (n)", min = 0, max=25, value = 5)
                   ),

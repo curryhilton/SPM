@@ -1,8 +1,8 @@
 name: spm_v1
 account: curryhilton
 server: shinyapps.io
-bundleId: 514072
+bundleId: 514203
 url: https://curryhilton.shinyapps.io/spm_v1/
-when: 1469377295.37031
+when: 1469396940.34159
 asMultiple: FALSE
 asStatic: FALSE
