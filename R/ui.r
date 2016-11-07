@@ -24,7 +24,9 @@ shinyUI(navbarPage("Statistical Process Measurement",
                       "u Chart, Standards Given",
                       "u Chart, No Standards Given",
                       "c Chart, Standards Given",
-                      "c Chart, No Standards Given"
+                      "c Chart, No Standards Given",
+                      "EWMA",
+                      "CUSUM"
                       ))
                          )
             )

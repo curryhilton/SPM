@@ -34,6 +34,18 @@ shinyServer(
       s <- data()[,2]
     })
 
+    dfx2 <- reactive({
+      x2 <- data()[,3]
+    })
+
+    dfp2 <- reactive({
+      p2 <- data()[,2]
+    })
+
+    dfc2 <- reactive({
+      c2 <- data()[,2]
+    })
+
     dfm <- reactive({
       m <- length(dfx())
     })
@@ -59,10 +71,11 @@ shinyServer(
 
     output$hist <- renderPlot({
       if(is.null(dfx())){return()}
-      hist(dfx(), main = "Histogram", xlab = "Charting Statistic")
+      boxplot(dfx(), main = "Phase I: Charting Statistic", xlab = "Charting Statistic", horizontal = T)
     })
 
     output$plot <- renderPlot({
+      if(is.null(data())){return()}
       if(input$chart == "Shewhart X-Bar Chart, Standards Given") {
         mu <- as.numeric(input$mu)
         sd <- as.numeric(input$sd)
@@ -103,6 +116,7 @@ shinyServer(
         n <- as.numeric(input$n)
         m <- seq(1:dfm())
         x <- dfx()                                   # define x as x in reactive expression
+        x2 <- dfx2()
         r <- dfr()                                   # define r as r in reactive expression
         rbar <- mean(r)                              # calculate r-bar based on ranges of subgroups
         d2 <- c(1.128, 1.693, 2.059, 2.326, 2.534,   # define d2 control chart parameters
@@ -126,12 +140,12 @@ shinyServer(
         count <- paste("Violations =", length(which(x > uclx | x < lclx)))
 
         par(bg="lightsteelblue2", mar = c(10, 5, 2, 2))
-        plot(m, x, xlab = "Subgroups", ylab = "X-bar", pch = 7, type = "b", ylim = c(min(x) - rbar, max(x) + rbar))
+        plot(m, x2, xlab = "Subgroups", ylab = "X-bar", pch = 7, type = "b", ylim = c(min(x2) - rbar, max(x2) + rbar))
         rect(par("usr")[1], par("usr")[3], par("usr")[2], par("usr")[4], col = "white")
         abline(h = cl, lwd = 2)
         abline(h = uclx, col = "red", lty = 2)
         abline(h = lclx, col = "red", lty = 2)
-        points(x, pch = 20, type = "b", col = ifelse(x > uclx | x < lclx, "red", "black"))
+        points(x, pch = 20, type = "b", col = ifelse(x2 > uclx | x2 < lclx, "red", "black"))
         mtext(size, at = m[1] + 1, side = 1, line = 5, adj = 0, font = 2)
         mtext(LCL, at = m[1] + 1, side = 1, line = 6, adj = 0, font = 2)
         mtext(CL, at = m[1] + 1, side = 1, line = 7, adj = 0, font = 2)
@@ -145,6 +159,7 @@ shinyServer(
         n <- as.numeric(input$n)
         m <- seq(1:dfm())
         x <- dfx()                                  # define x as x in reactive expression
+        x2 <- dfx2()
         s <- dfs()                                  # define s as s in reactive expression
         sbar <- mean(s)                             # calculate s-bar based on sd of subgroups
         c4 <- (4*(n-1))/(4*n-3)                     # calculate control chart constant c4
@@ -182,6 +197,7 @@ shinyServer(
         n <- as.numeric(input$n)
         m <- seq(1:dfm())
         r <- dfx()                                  # define x as r in reactive expression
+        r2 <- dfr()
         d2 <- c(1.128, 1.693, 2.059, 2.326, 2.534,  # define d2 control chart parameters
                 2.704, 2.847, 2.970, 3.078, 3.173,  # Montgomery's textbook
                 3.258, 3.336, 3.407, 3.472, 3.532,
@@ -226,6 +242,7 @@ shinyServer(
         n <- as.numeric(input$n)
         m <- seq(1:dfm())
         r <- dfx()
+        r <- dfr()
         d2 <- c(1.128, 1.693, 2.059, 2.326, 2.534,  # define d2 control chart parameters
                 2.704, 2.847, 2.970, 3.078, 3.173,  # Montgomery's textbook
                 3.258, 3.336, 3.407, 3.472, 3.532,
@@ -271,6 +288,7 @@ shinyServer(
         L <- as.numeric(input$l)
         n <- as.numeric(input$n)
         s <- dfx()
+        s2 <- dfs()
         m <- seq(1:dfm())
         c4 <- (4*(n-1))/(4*n-3)                    # calculate control chart constant c4
         cl <- c4*sd                                # calculate centerline of the s chart
@@ -304,6 +322,7 @@ shinyServer(
         L <- as.numeric(input$l)
         n <- as.numeric(input$n)
         s <- dfx()
+        s2 <- dfs()
         m <- seq(1:dfm())
         c4 <- (4*(n-1))/(4*n-3)          # calculate control chart constant c4
         B3 = 1-(L/c4)*(sqrt(1-c4^2))     # calculate control chart constant B3
@@ -341,6 +360,7 @@ shinyServer(
         L <- as.numeric(input$l)
         n <- as.numeric(input$n)
         p <- dfx()
+        p2 <- dfp2()
         m <- seq(1:dfm())
         cl <- mu                            # define p based on user input
         uclp <- cl + L*sqrt((cl*(1-cl))/n)  # calculate upper control chart limit for p chart
@@ -374,6 +394,7 @@ shinyServer(
         L <- as.numeric(input$l)
         n <- as.numeric(input$n)
         p <- dfx()
+        p2 <- dfp2()
         m <- seq(1:dfm())
         cl <- mean(p)                                  # define p based on user input
         uclp <- cl + L*sqrt((cl*(1-cl))/n)             # calculate upper control chart limit for p chart
@@ -408,6 +429,7 @@ shinyServer(
         L <- as.numeric(input$l)
         n <- as.numeric(input$n)
         np <- n*dfx()
+        np2 <- n*dfp2()
         m <- seq(1:dfm())
         cl <- n*mu
         uclnp <- cl + L*sqrt(cl*(1-mu))              # calculate upper control chart limit for np chart
@@ -442,6 +464,7 @@ shinyServer(
         n <- as.numeric(input$n)
         p <- dfx()
         np <- n*p
+        np2 <- n*dfp2()
         m <- seq(1:dfm())
         cl <- mean(np)
         uclnp <- cl + L*sqrt(cl*(1-mean(p)))              # calculate upper control chart limit for np chart
@@ -476,6 +499,7 @@ shinyServer(
         L <- as.numeric(input$l)
         n <- as.numeric(input$n)
         c <- dfx()
+        c2 <- dfc2()
         m <- seq(1:dfm())
         cl <- mu                            # define c
         uclc <- cl + L*sqrt(cl)             # calculate upper control chart limit for c chart
@@ -509,6 +533,7 @@ shinyServer(
         L <- as.numeric(input$l)
         n <- as.numeric(input$n)
         c <- dfx()
+        c2 <- dfc2()
         m <- seq(1:dfm())
         cl <- mean(c)                       # define c
         uclc <- cl + L*sqrt(cl)             # calculate upper control chart limit for c chart
@@ -543,6 +568,7 @@ shinyServer(
         n <- as.numeric(input$n)
         m <- seq(1:dfm())
         x <- dfx()                                    # define x as x in reactive expression
+        x2 <- dfr()
         mr <- rep(NA, n)                              # function for MR
         for(j in 1:n+1){
           mr[j] = abs(x[j]-x[j-1])
