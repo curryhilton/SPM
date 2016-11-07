@@ -4,34 +4,52 @@ library(shinythemes)
 
 shinyUI(navbarPage("Statistical Process Measurement",
   theme = shinytheme("flatly"),
-  tabPanel("Selection",
 
-    fluidRow(
-      column(8, wellPanel(
-        selectInput("chart", "Control Chart",
-                    c("Shewhart X-Bar Chart, Standards Given",
-                      "Shewhart X-Bar Chart (R), No Standards Given",
-                      "Shewhart X-Bar Chart (s), No Standards Given",
-                      "Shewhart X-Bar Chart (MR), No Standards Given",
-                      "R Chart, Standards Given",
-                      "R Chart, No Standards Given",
-                      "s Chart, Standards Given",
-                      "s Chart, No Standards Given",
-                      "p Chart, Standards Given",
-                      "p Chart, No Standards Given",
-                      "np Chart, Standards Given",
-                      "np Chart, No Standards Given",
-                      "u Chart, Standards Given",
-                      "u Chart, No Standards Given",
-                      "c Chart, Standards Given",
-                      "c Chart, No Standards Given",
-                      "EWMA",
-                      "CUSUM"
-                      ))
-                         )
-            )
+  tabPanel("Process Data Selection",
 
-          ),
+           fluidRow(
+             column(10, wellPanel(
+               radioButtons("vara", "Variable or Attribute Process Data?",
+                            choices = c("Variable" = "option1",
+                                        "Attribute" = "option2"),
+                            selected = "option1"
+               ),
+
+               conditionalPanel(
+                 condition = "input.vara == 'option1'",
+                 selectInput("chart", "Control Chart",
+                             c("Shewhart X-Bar Chart, Standards Given",
+                               "Shewhart X-Bar Chart (R), No Standards Given",
+                               "Shewhart X-Bar Chart (s), No Standards Given",
+                               "Shewhart X-Bar Chart (MR), No Standards Given",
+                               "R Chart, Standards Given",
+                               "R Chart, No Standards Given",
+                               "s Chart, Standards Given",
+                               "s Chart, No Standards Given",
+                               "EWMA",
+                               "CUSUM"
+                             ))
+               ),
+
+               conditionalPanel(
+                 condition = "input.vara == 'option2'",
+                 selectInput("chart", "Control Chart",
+                             c("p Chart, Standards Given",
+                               "p Chart, No Standards Given",
+                               "np Chart, Standards Given",
+                               "np Chart, No Standards Given",
+                               "u Chart, Standards Given",
+                               "u Chart, No Standards Given",
+                               "c Chart, Standards Given",
+                               "c Chart, No Standards Given"
+                              )
+                            )
+                              )
+
+
+                                )
+                )
+            ),
 
     sidebarLayout(
       sidebarPanel(
@@ -82,9 +100,10 @@ shinyUI(navbarPage("Statistical Process Measurement",
         h4("Parameters"),
         conditionalPanel(
           condition = "input.chart == 'Shewhart X-Bar Chart, Standards Given'",
-        textInput("mu", "Mean", "10"),
-        textInput("sd", "Standard Deviation", "1")
+            textInput("mu", "Mean", ""),
+            textInput("sd", "Sigma", "")
         ),
+
         conditionalPanel(
           condition = "input.chart == 'R Chart, Standards Given'",
           textInput("r", "Range", "10")
