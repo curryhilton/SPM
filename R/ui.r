@@ -82,7 +82,7 @@ shinyUI(navbarPage("Statistical Process Measurement",
         h4("Parameters"),
         textInput("mu", "Mean/Proportion", "10"),
         textInput("sd", "Standard Deviation/Range", "1"),
-        sliderInput("l", "L", min = 0, max=8, value = 3),
+        sliderInput("l", "L", min = 0, max=5, value = 3, step = 0.01),
         sliderInput("n", "Sample Size (n)", min = 0, max=25, value = 5)
                   ),
 

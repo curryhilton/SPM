@@ -137,7 +137,7 @@ shinyServer(
         UCL <- paste("UCL =", round(uclx, 2))
         sub <- paste("Subgroups =", length(m))
         stdev <- paste("Standard Deviation =", round(sd, 2))
-        count <- paste("Violations =", length(which(x > uclx | x < lclx)))
+        count <- paste("Violations =", length(which(x2 > uclx | x2 < lclx)))
 
         par(bg="lightsteelblue2", mar = c(10, 5, 2, 2))
         plot(m, x2, xlab = "Subgroups", ylab = "X-bar", pch = 7, type = "b", ylim = c(min(x2) - rbar, max(x2) + rbar))
@@ -145,7 +145,7 @@ shinyServer(
         abline(h = cl, lwd = 2)
         abline(h = uclx, col = "red", lty = 2)
         abline(h = lclx, col = "red", lty = 2)
-        points(x, pch = 20, type = "b", col = ifelse(x2 > uclx | x2 < lclx, "red", "black"))
+        points(x2, pch = 20, type = "b", col = ifelse(x2 > uclx | x2 < lclx, "red", "black"))
         mtext(size, at = m[1] + 1, side = 1, line = 5, adj = 0, font = 2)
         mtext(LCL, at = m[1] + 1, side = 1, line = 6, adj = 0, font = 2)
         mtext(CL, at = m[1] + 1, side = 1, line = 7, adj = 0, font = 2)
