@@ -192,12 +192,11 @@ shinyServer(
         mtext(count, at = m[length(m)] - 1, side = 1, line = 7, adj = 1, font = 2)
 
       } else if (input$chart == "R Chart, Standards Given") {
-        sd <- as.numeric(input$sd)
+        r <- as.numeric(input$r)
         L <- as.numeric(input$l)
         n <- as.numeric(input$n)
         m <- seq(1:dfm())
-        r <- dfx()                                  # define x as r in reactive expression
-        r2 <- dfr()
+        r2 <- dfx()                                  # define x as r in reactive expression
         d2 <- c(1.128, 1.693, 2.059, 2.326, 2.534,  # define d2 control chart parameters
                 2.704, 2.847, 2.970, 3.078, 3.173,  # Montgomery's textbook
                 3.258, 3.336, 3.407, 3.472, 3.532,
@@ -210,9 +209,9 @@ shinyServer(
                 0.720, 0.716, 0.712, 0.708)
         D1 = d2[n-1] - L*d3[n-1]        # calculate control chart constant D1
         D2 = d2[n-1] + L*d3[n-1]        # calculate control chart constant D2
-        cl <- d2[n-1]*sd                # calculate centerline of R-bar chart
-        uclr <- D2*sd                   # calculate upper control chart limit for R-bar chart
-        lclr <- max(D1*sd, 0)           # calculate lower control chart limit for R-bar chart
+        cl <- d2[n-1]*r                 # calculate centerline of R-bar chart
+        uclr <- D2*r                    # calculate upper control chart limit for R-bar chart
+        lclr <- max(D1*r, 0)            # calculate lower control chart limit for R-bar chart
 
         size <- paste("Subgroup Size =", n)
         LCL <- paste("LCL =", round(lclr, 2))
@@ -223,12 +222,12 @@ shinyServer(
         count <- paste("Violations =", length(which(r > uclr | r < lclr)))
 
         par(bg="lightsteelblue2", mar = c(10, 5, 2, 2))
-        plot(m, r, xlab = "Subgroups", ylab = "X-bar", pch = 7, type = "b", ylim = c(min(r) - sd, max(r) + sd))
+        plot(m, r2, xlab = "Subgroups", ylab = "X-bar", pch = 7, type = "b", ylim = c(min(r2) - r, max(r2) + r))
         rect(par("usr")[1], par("usr")[3], par("usr")[2], par("usr")[4], col = "white")
         abline(h = cl, lwd = 2)
         abline(h = uclr, col = "red", lty = 2)
         abline(h = lclr, col = "red", lty = 2)
-        points(r, pch = 20, type = "b", col = ifelse(r > uclr | r < lclr, "red", "black"))
+        points(r2, pch = 20, type = "b", col = ifelse(r2 > uclr | r2 < lclr, "red", "black"))
         mtext(size, at = m[1] + 1, side = 1, line = 5, adj = 0, font = 2)
         mtext(LCL, at = m[1] + 1, side = 1, line = 6, adj = 0, font = 2)
         mtext(CL, at = m[1] + 1, side = 1, line = 7, adj = 0, font = 2)

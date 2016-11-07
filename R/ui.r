@@ -80,8 +80,15 @@ shinyUI(navbarPage("Statistical Process Measurement",
     sidebarLayout(
       sidebarPanel(
         h4("Parameters"),
-        textInput("mu", "Mean/Proportion", "10"),
-        textInput("sd", "Standard Deviation/Range", "1"),
+        conditionalPanel(
+          condition = "input.chart == 'Shewhart X-Bar Chart, Standards Given'",
+        textInput("mu", "Mean", "10"),
+        textInput("sd", "Standard Deviation", "1")
+        ),
+        conditionalPanel(
+          condition = "input.chart == 'R Chart, Standards Given'",
+          textInput("r", "Range", "10")
+        ),
         sliderInput("l", "L", min = 0, max=5, value = 3, step = 0.01),
         sliderInput("n", "Sample Size (n)", min = 0, max=25, value = 5)
                   ),
