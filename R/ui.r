@@ -76,7 +76,7 @@ shinyUI(navbarPage("Statistical Process Measurement",
 
        ),
 
-  tabPanel("Control Chart",
+  tabPanel("Monitoring",
     sidebarLayout(
       sidebarPanel(
         h4("Parameters"),
@@ -93,7 +93,9 @@ shinyUI(navbarPage("Statistical Process Measurement",
 
              )
                   )
-          )
+          ),
+
+  tabPanel("Performance")
 
   )
 )
