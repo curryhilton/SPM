@@ -71,7 +71,7 @@ shinyServer(
 
     output$hist <- renderPlot({
       if(is.null(dfx())){return()}
-      boxplot(dfx(), main = "Phase I: Charting Statistic", xlab = "Charting Statistic", horizontal = T)
+      boxplot(dfx(), main = "Charting Statistic", xlab = "Charting Statistic", horizontal = T)
     })
 
     output$plot <- renderPlot({
